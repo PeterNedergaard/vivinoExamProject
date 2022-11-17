@@ -1,0 +1,24 @@
+1668688374310	geckodriver	INFO	Listening on 127.0.0.1:54486
+1668688377366	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-headless" "--remote-debugging-port" "54487" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\fiske\\AppData\\Local\\Temp\\rust_mozprofilez5OsrQ"
+*** You are running in headless mode.
+1668688377708	Marionette	INFO	Marionette enabled
+1668688377711	Marionette	INFO	Listening on port 54497
+WebDriver BiDi listening on ws://127.0.0.1:54487
+Read port: 54497
+1668688377908	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\fiske\\AppData\\Local\\Temp\\rust_mozprofilez5OsrQ\\search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:54487/devtools/browser/d6aabf46-8710-42ad-b433-0495aa57c930
+1668688384768	Marionette	INFO	Stopped listening on port 54497
+1668688786210	geckodriver	INFO	Listening on 127.0.0.1:64801
+1668688789242	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-headless" "--remote-debugging-port" "64802" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\fiske\\AppData\\Local\\Temp\\rust_mozprofile2ZZRBo"
+*** You are running in headless mode.
+1668688789461	Marionette	INFO	Marionette enabled
+1668688789464	Marionette	INFO	Listening on port 64811
+WebDriver BiDi listening on ws://127.0.0.1:64802
+Read port: 64811
+1668688789629	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\fiske\\AppData\\Local\\Temp\\rust_mozprofile2ZZRBo\\search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:64802/devtools/browser/9c393cb9-bc4f-4c5a-888d-bf0bd81240de
+1668688796364	Marionette	INFO	Stopped listening on port 64811
