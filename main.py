@@ -1,3 +1,3 @@
-import modules.webScaper as Scrape
+import modules.webScraper as Scrape
 
 print(Scrape.get_wine_soup())
