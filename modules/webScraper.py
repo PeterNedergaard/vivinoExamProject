@@ -60,9 +60,6 @@ def get_wine_soup():
         new_height = browser.execute_script("return document.body.scrollHeight")
 
         if new_height > current_height+100:
-            print('NewHeight: ' + str(new_height))
-            print('CurrentHeight: ' + str(current_height))
-
             scroll_num += 1
             scroll_tries = 0
             print('Scroll: ' + str(scroll_num) + ' out of 1205')
