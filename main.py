@@ -1,3 +1,8 @@
-import modules.webScraper as Scrape
+import modules.dataFromSoup as Data
+import modules.writeToCSV as Write
+import pandas as pd
 
-print(Scrape.get_wine_soup())
+Write.write_data_to_csv(Data.get_wine_data())
+# data = pd.read_csv('wine_data.csv', encoding='cp1250')
+
+# print(data)
