@@ -2,18 +2,6 @@ import requests
 import csv
 import math
 
-headers_all = {
-    'User-Agent': ''
-}
-
-params_all = {
-    'min_rating': 1,
-    'order_by': 'ratings_count',
-    'order': 'desc',
-    'price_range_max': 2500,
-    'price_range_min': 0,
-}
-
 file = open('./wine_data2.csv', 'w', encoding='utf-8')
 writer = csv.writer(file)
 writer.writerow(['grapes', 'region', 'country', 'winery', 'rating'])
