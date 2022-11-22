@@ -4,5 +4,5 @@ import pandas as pd
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
-data = pd.read_csv('wine_data.csv', encoding='utf-8')
+data = pd.read_csv('wine_data_prepared_new.csv', encoding='utf-8')
 print(data)

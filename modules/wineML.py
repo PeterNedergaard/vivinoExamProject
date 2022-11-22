@@ -12,7 +12,7 @@ np.set_printoptions(threshold=sys.maxsize)
 
 le = preprocessing.LabelEncoder()
 
-data = pd.read_csv('../wine_data_prepared.csv', encoding='utf-8')
+data = pd.read_csv('../wine_data_prepared_new.csv', encoding='utf-8')
 # data = pd.read_csv('../wine_data_preparedTest.csv', encoding='utf-8')
 data['rating'] = le.fit_transform(data['rating'])
 
