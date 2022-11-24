@@ -1,3 +1,4 @@
+import numpy
 import pandas as pd
 import numpy as np
 import sys
@@ -12,9 +13,10 @@ np.set_printoptions(threshold=sys.maxsize)
 
 le = preprocessing.LabelEncoder()
 
-data = pd.read_csv('../wine_data_prepared_new.csv', encoding='utf-8')
-# data = pd.read_csv('../wine_data_preparedTest.csv', encoding='utf-8')
+data = pd.read_csv('../data/wine_data_prepared_new.csv', encoding='utf-8')
 data['rating'] = le.fit_transform(data['rating'])
+
+# numpy.save('../data/classes.npy', le.classes_)
 
 X = data.drop(['rating'], axis='columns').values
 y = data['rating'].values
@@ -27,5 +29,5 @@ score = accuracy_score(y_test, predictions)
 print('Score: ' + str(score))
 print('Average deviation: ' + str(get_average_deviation(le.inverse_transform(predictions), le.inverse_transform(y_test))))
 
-# pickle.dump(model, open('../wine_model.sav', 'wb'))
+# pickle.dump(model, open('../data/wine_model.sav', 'wb'))
 # model = pickle.load(open('wine_model.sav', 'rb'))

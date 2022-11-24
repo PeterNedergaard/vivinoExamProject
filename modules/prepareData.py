@@ -11,7 +11,7 @@ def clean_grape_string(grape_string):
 
 
 def prepare_data():
-    data = pd.read_csv('../wine_data.csv', encoding='utf-8')
+    data = pd.read_csv('../data/wine_data.csv', encoding='utf-8')
 
     data['grapes'] = data['grapes'].apply(clean_grape_string)
 
