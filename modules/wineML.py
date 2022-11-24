@@ -16,7 +16,7 @@ le = preprocessing.LabelEncoder()
 data = pd.read_csv('../data/wine_data_prepared_new.csv', encoding='utf-8')
 data['rating'] = le.fit_transform(data['rating'])
 
-# numpy.save('../data/classes.npy', le.classes_)
+# np.save('../data/classes.npy', le.classes_)
 
 X = data.drop(['rating'], axis='columns').values
 y = data['rating'].values
