@@ -1,5 +1,7 @@
 import PySimpleGUI as sg
+import numpy
 import pandas as pd
+import numpy as np
 
 from modules.predict_wine_data import predict_data
 
@@ -17,11 +19,11 @@ def show_gui():
     ]
 
     tab2_layout = [[sg.T('Tab 2')],
-                   [sg.Text('Vælg specifikation', size=(30, 1), font='Lucida', justification='left')],
-                   [sg.Combo(
-                       ["Land", "Region", "Druesort", "Vingård"],
-                       key='spec', readonly=True, default_value="Land")],
-                   [sg.Image("images/graf.png", key="dropdownimage")],
+                   # [sg.Text('Vælg specifikation', size=(30, 1), font='Lucida', justification='left')],
+                   # [sg.Combo(
+                   #     ["Land", "Region", "Druesort", "Vingård"],
+                   #     key='spec', readonly=True, default_value="Land")],
+                   [sg.Image("images/top10_plot.png", key="top10_plot")],
                    ]
 
     countries = list(pd.read_csv("data/countries.csv")["countries"].to_numpy())
@@ -29,17 +31,22 @@ def show_gui():
     grape_type = list(pd.read_csv("data/grapes.csv")["grapes"].to_numpy())
     winery = list(pd.read_csv("data/wineries.csv")["wineries"].to_numpy())
 
-    print("pandas countries:", type(countries))
+    country_region_winery = list(pd.read_csv("data/country_region_winery.csv")['country_region_winery'].to_numpy())
 
     chosen_grapes = []
+    chosen_regions = []
+    chosen_wineries = []
 
     tab3_layout = [[sg.T('Tab 3')],
                    [sg.Combo(
                        countries
-                       , default_value="Land", key="Land", readonly=True)],
+                       , default_value="Land", key="Land", readonly=True, enable_events=True)],
                    [sg.Combo(
                        regions
-                       , default_value="Region", key="Region", readonly=True)],
+                       , default_value="Region", key="Region", readonly=True, enable_events=True)],
+                   [sg.Combo(
+                       winery
+                       , default_value="Vingård", key="Vingård", readonly=True)],
 
                    [sg.Text("Vælg op til 5 druer fra nedenstående list")],
                    [sg.Text("indtast evt druens forbogstav for at filtrere resultaterne")],
@@ -48,13 +55,9 @@ def show_gui():
                        grape_type, key="Druesort", select_mode="extended", size=(15, 8)),
                        sg.Button("Tilføj druesort", key="add_grape"), sg.Button("Fjern valgte druer", key="clear_list"),
                        sg.Multiline(chosen_grapes, key="chosen_grapes", justification="right", size=(35, 8))],
-
-                   [sg.Combo(
-                       winery
-                       , default_value="Vingård", key="Vingård", readonly=True)],
                    [sg.Button("Kør", key="Predict", enable_events=True)],
                    [sg.Text(size=(30, 1), font='Lucida', justification='left', key="tab3text")],
-                   [sg.Image(key="tab3image")]
+                   [sg.Image("images/all_ratings_plot.png", key="all_ratings_plot", size=(900, 300))]
 
                    ]
 
@@ -69,9 +72,9 @@ def show_gui():
                    ]
     layout = [
         [sg.TabGroup([[sg.Tab('Om spec. og bedømmelse', tab1_layout),
-                       sg.Tab('Tab 2', tab2_layout),
-                       sg.Tab('Tab 3', tab3_layout),
-                       sg.Tab('Tab 4', tab4_layout),
+                       sg.Tab('Top 10 lande', tab2_layout),
+                       sg.Tab('Forudsig bedømmelse', tab3_layout),
+                       sg.Tab('Bedste vin for prisen', tab4_layout),
                        sg.Tab('Tab 5', tab5_layout),
                        sg.Tab('Memes-tab', tab6_layout),
 
@@ -85,6 +88,27 @@ def show_gui():
         res = [idx for idx in array if idx[0].lower() == string.lower()]
         return res
 
+    def get_regions_from_country(country):
+        region_list = []
+
+        for row in country_region_winery:
+            str_row = str(row)
+            if str_row.startswith(country):
+                region_list.append(str_row.split(',')[1])
+
+        return list(numpy.unique(region_list))
+
+    def get_wineries_from_region(region):
+        winery_list = []
+
+        for row in country_region_winery:
+            str_row = str(row)
+            str_split = str_row.split(',')
+            if str_split[1] == region:
+                winery_list.append(str_split[2])
+
+        return list(numpy.unique(winery_list))
+
     # Display and interact with the Window using an Event Loop
     while True:
         event, values = window.read()
@@ -92,6 +116,14 @@ def show_gui():
         print(event)
         if event == sg.WINDOW_CLOSED or event == 'Quit':
             break
+
+        if event == "Land":
+            chosen_regions = get_regions_from_country(window["Land"].get())
+            window["Region"].update(values=chosen_regions)
+
+        if event == "Region":
+            chosen_wineries = get_wineries_from_region(window["Region"].get())
+            window["Vingård"].update(values=chosen_wineries)
 
         if event == "filter_grapes":
             if window["filter_grapes"].get() != "":
@@ -115,7 +147,7 @@ def show_gui():
                 print("Vingård:", window["Vingård"].get())
                 print("Land:", window["Land"].get())
                 print("Region:", window["Region"].get())
-                window["tab3text"].update(predict_data(grapes=chosen_grapes,winery=window["Vingård"].get(),country=window["Land"].get(),region=window["Region"].get()))
+                window["tab3text"].update("Vurderet bedømmelse: " + str(predict_data(grapes=chosen_grapes,winery=window["Vingård"].get(),country=window["Land"].get(),region=window["Region"].get())))
                 # window["tab3text"].update("result")
             else:
                 window["tab3text"].update("Vælg værdier på alle felter")
