@@ -4,7 +4,7 @@ import pandas as pd
 from modules.predict_wine_data import predict_data
 
 
-def showgui():
+def show_gui():
     tab1_layout = [
         [sg.T('Denne graf viser forholdet mellem Vines specifikationer og deres bedømmelse')],
         [sg.T('data 1', key='file 1'), sg.Image("images/graf.png", size=(900, 150))],

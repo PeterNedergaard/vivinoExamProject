@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from modules.predict_wine_data import predict_data
 import csv
-from modules.python_gui import showgui
+from modules.python_gui import show_gui
 
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
@@ -15,4 +15,4 @@ pd.set_option('display.width', 1000)
 
 print(pd.read_csv('data/empty_predict.csv', encoding='utf-8'))
 
-showgui()
+show_gui()
