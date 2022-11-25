@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/vivinoExamProject.iml" filepath="$PROJECT_DIR$/.idea/vivinoExamProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Vivino.iml" filepath="$PROJECT_DIR$/.idea/Vivino.iml" />
     </modules>
   </component>
 </project>
