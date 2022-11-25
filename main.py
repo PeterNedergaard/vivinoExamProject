@@ -9,4 +9,6 @@ pd.set_option('display.width', 1000)
 # data = pd.read_csv('data/wine_data_prepared_new.csv', encoding='utf-8')
 # print(data)
 
-predict_data(1,1,1,1)
+# predict_data(1,1,1,1)
+
+print(pd.read_csv('data/empty_predict.csv', encoding='utf-8'))
