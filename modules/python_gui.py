@@ -1,8 +1,10 @@
 import PySimpleGUI as sg
 import pandas as pd
 
-def showgui():
+from modules.predict_wine_data import predict_data
 
+
+def showgui():
     tab1_layout = [
         [sg.T('Denne graf viser forholdet mellem Vines specifikationer og deres bedømmelse')],
         [sg.T('data 1', key='file 1'), sg.Image("images/graf.png", size=(900, 150))],
@@ -22,35 +24,15 @@ def showgui():
                    [sg.Image("images/graf.png", key="dropdownimage")],
                    ]
 
-    countries = ["Argentina", "Australien", "Chile", "Frankrig", "Italien", "Portugal", "Spanien", "Tyskland", "USA",
-                 "Østrig"]
+    countries = list(pd.read_csv("data/countries.csv")["countries"].to_numpy())
+    regions = list(pd.read_csv("data/regions.csv")["regions"].to_numpy())
+    grape_type = list(pd.read_csv("data/grapes.csv")["grapes"].to_numpy())
+    winery = list(pd.read_csv("data/wineries.csv")["wineries"].to_numpy())
 
+    print("pandas countries:", type(countries))
 
-
-    grape_type = ['Müller-Thurgau', 'Malvasia', 'Moscatel de Alejandría', 'Muscadelle', 'Gaidouria', 'Viura',
-                  'Weissburgunder', 'Corvinone', 'Tempranillo', 'Fernao Pires', 'Cabernet Franc',
-                  'Moscatel de grano menudo', 'Grauburgunder', 'Grenache', 'Pinot Noir', 'Verdelho', 'Bourboulenc',
-                  'Hárslevelű', 'Gouveio', 'Petite Sirah', 'Clairette', 'Pinotage', 'Trincadeira', 'Carignan', 'Huxelrebe',
-                  'Torrontés', 'Pinot Gris', 'Malbec', "Nero d'Avola", 'Tinta Roriz', 'Mencia', 'Assyrtiko', 'Counoise',
-                  'Savagnin', 'Graciano', 'Muscardin', 'Merlot', 'Cabernet Sauvignon', 'Castelao', 'Grüner Veltliner',
-                  'Aligoté', 'Riesling', 'Parellada', 'Terrantez', 'Canaiolo Nero', 'Sangiovese', 'Trepat', 'Tinta Barroca',
-                  'Cariñena', 'Fiano', 'Pinot Grigio', 'Sauvignon Blanc', 'Athiri', 'Zweigelt', 'Trebbiano',
-                  'Pinot Meunier', 'Barbera', 'Grolleau', 'Malmsey', 'Touriga Nacional', 'Cinsaut', 'Primitivo',
-                  'Montepulciano', 'Garganega', 'Xarel-lo', 'Cortese', 'Malvasia Nera', 'Tocai Friulano',
-                  'Catarratto Bianco', 'Carménère', 'Pedro Ximenez', 'Krassato', 'Gamay', 'Corvina', 'Garnacha', 'Arneis',
-                  'Touriga Franca', 'Xinomavro', 'Tannat', 'Verdejo', 'Viognier', 'Negroamaro', 'Vidal Blanc', 'Kerner',
-                  'Pinot Blanc', 'Glera (Prosecco)', 'Chardonnay', 'Boal Branco', 'Vaccareze', 'Chasselas', 'Petit Verdot',
-                  'Moscato', 'Malvasia Fina', 'Rondinella', 'Palomino', 'Loureiro', 'Chenin Blanc', 'Agiorgitiko',
-                  'Arinto de Bucelas', 'Auxerrois', 'Sémillon', 'Dolcetto', 'Azal', 'Batoca', 'Silvaner', 'Marsanne',
-                  'Aglianico', 'Alvarinho', 'Touriga Francesa', 'Aidani', 'Roussanne', 'Baga', 'Aragonez', 'Rabigato',
-                  'Stavroto', 'Furmint', 'Gewürztraminer', 'Albariño', 'Nebbiolo', 'Bonarda', 'Shiraz/Syrah',
-                  'Blaufränkisch', 'Sercial', 'Mourvedre', 'Melon de Bourgogne', 'Souzao', 'Cinsault', 'Avesso',
-                  'Zinfandel', 'Grenache Blanc', 'Katsano']
     chosen_grapes = []
 
-    regions = ["Bordeaux", "Bourgogne", "Napa Valley", "Piemonte", "Rhone Valley", "Toscana"]
-
-    winery = ["winery1", "winery2", "winery3"]
     tab3_layout = [[sg.T('Tab 3')],
                    [sg.Combo(
                        countries
@@ -99,11 +81,9 @@ def showgui():
     window = sg.Window("window", layout, size=(800, 800), finalize=True)
     window['filter_grapes'].bind("<Return>", "_Enter")
 
-
     def modified_array(array, string):
         res = [idx for idx in array if idx[0].lower() == string.lower()]
         return res
-
 
     # Display and interact with the Window using an Event Loop
     while True:
@@ -119,7 +99,6 @@ def showgui():
             else:
                 window["Druesort"].update(grape_type)
 
-
         if event == "clear_list":
             chosen_grapes.clear()
             window["chosen_grapes"].update(chosen_grapes)
@@ -128,18 +107,16 @@ def showgui():
                 chosen_grapes.append(window["Druesort"].get())
                 window["chosen_grapes"].update(chosen_grapes)
 
-
-
         if event == "Predict":
             if window["Vingård"].get() in winery and window["Land"].get() in countries and window[
-            "Region"].get() in regions and len(chosen_grapes) >= 1:
+                "Region"].get() in regions and len(chosen_grapes) >= 1:
                 # print("vælg ting og sager")
                 print("Valgte druer:", chosen_grapes)
                 print("Vingård:", window["Vingård"].get())
                 print("Land:", window["Land"].get())
                 print("Region:", window["Region"].get())
-                # window["tab3text"].update(predict_data(grapes=chosen_grapes,winery=window["Vingård"].get(),country=window["Land"].get(),region=window["Region"].get()))
-                window["tab3text"].update("result")
+                window["tab3text"].update(predict_data(grapes=chosen_grapes,winery=window["Vingård"].get(),country=window["Land"].get(),region=window["Region"].get()))
+                # window["tab3text"].update("result")
             else:
                 window["tab3text"].update("Vælg værdier på alle felter")
 
