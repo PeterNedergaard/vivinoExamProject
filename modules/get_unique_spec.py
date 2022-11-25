@@ -52,7 +52,7 @@ file.close()
 #     writer.writerow([region])
 # file.close()
 
-for row in wine_data:
+# for row in wine_data:
 
 
 # file = open('../data/regions.csv', 'w', encoding='utf-8')
