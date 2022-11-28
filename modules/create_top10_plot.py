@@ -4,9 +4,9 @@ from collections import OrderedDict
 
 wine_data = pd.read_csv('../data/wine_data.csv', encoding="utf-8")
 
-df_avg = pd.DataFrame(wine_data.groupby('country', as_index=False)['rating'].mean()).head(10)
+df_avg = pd.DataFrame(wine_data.groupby('country', as_index=False)['rating'].mean())
 
-ordered_df_avg = df_avg.sort_values(['rating'], ascending=[False])
+ordered_df_avg = df_avg.sort_values(['rating'], ascending=[False]).head(10)
 
 rating_dict = dict(zip(ordered_df_avg['country'], round(ordered_df_avg['rating'], 3)))
 
