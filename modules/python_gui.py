@@ -2,9 +2,9 @@ import PySimpleGUI as sg
 import numpy
 import pandas as pd
 import numpy as np
-
+import matplotlib.pyplot as plt
+from modules.best_country_in_range import get_best_in_range
 from modules.predict_wine_data import predict_data
-
 
 def show_gui():
     tab1_layout = [
@@ -62,10 +62,18 @@ def show_gui():
                    ]
 
     tab4_layout = [[sg.T('Tab 4')],
-                   [sg.InputText('data 4', key='file 4')],
+                   [sg.Text("Minimum pris:")],
+                   [sg.InputText(key='Min')],
+                   [sg.Text("Maximum pris (max. 2500):")],
+                   [sg.InputText(key='Max')],
+                   [sg.Button("Søg", key="Best_country", enable_events=True)],
+                   [sg.Text(key='Tab4_result')],
                    ]
     tab5_layout = [[sg.T('Tab 5')],
-                   [sg.InputText('data 5', key='file 5')],
+                   [sg.Combo(
+                       countries
+                       , default_value="Land", key="Popular_land", readonly=True, enable_events=True)],
+                   [sg.Image(key="popular_top5_plot")]
                    ]
     tab6_layout = [[sg.T('Tab 6')],
                    [sg.Image("images/meme.png", key="file 6")],
@@ -74,8 +82,8 @@ def show_gui():
         [sg.TabGroup([[sg.Tab('Om spec. og bedømmelse', tab1_layout),
                        sg.Tab('Top 10 lande', tab2_layout),
                        sg.Tab('Forudsig bedømmelse', tab3_layout),
-                       sg.Tab('Bedste vin for prisen', tab4_layout),
-                       sg.Tab('Tab 5', tab5_layout),
+                       sg.Tab('Bedste land for prisen', tab4_layout),
+                       sg.Tab('Top 5 populære vine', tab5_layout),
                        sg.Tab('Memes-tab', tab6_layout),
 
                        ]])],
@@ -131,6 +139,20 @@ def show_gui():
             else:
                 window["Druesort"].update(grape_type)
 
+        if event == "Best_country":
+            max_price = window["Max"].get()
+            min_price = window["Min"].get()
+
+            if not window["Min"].get().isnumeric() or not window["Max"].get().isnumeric():
+                result = "Pris skal være mellem 0 og 2500 kr."
+            else:
+                result = get_best_in_range(int(min_price), int(max_price))
+
+            window["Tab4_result"].update(result)
+
+        if event == "Popular_land":
+            window["popular_top5_plot"].update("images/popular_top5_plots/top5_" + window['Popular_land'].get() + ".png")
+
         if event == "clear_list":
             chosen_grapes.clear()
             window["chosen_grapes"].update(chosen_grapes)
@@ -147,7 +169,9 @@ def show_gui():
                 print("Vingård:", window["Vingård"].get())
                 print("Land:", window["Land"].get())
                 print("Region:", window["Region"].get())
-                window["tab3text"].update("Vurderet bedømmelse: " + str(predict_data(grapes=chosen_grapes,winery=window["Vingård"].get(),country=window["Land"].get(),region=window["Region"].get())))
+                window["tab3text"].update("Vurderet bedømmelse: " + str(
+                    predict_data(grapes=chosen_grapes, winery=window["Vingård"].get(), country=window["Land"].get(),
+                                 region=window["Region"].get())))
                 # window["tab3text"].update("result")
             else:
                 window["tab3text"].update("Vælg værdier på alle felter")

@@ -2,9 +2,9 @@ import requests
 import csv
 import math
 
-file = open('../data/wine_data.csv', 'w', encoding='utf-8')
+file = open('../data/wine_data_plus.csv', 'w', encoding='utf-8')
 writer = csv.writer(file)
-writer.writerow(['grapes', 'region', 'country', 'winery', 'rating', 'price'])
+writer.writerow(['grapes', 'region', 'country', 'winery', 'rating', 'price', 'ratings_count', 'name'])
 
 headers = {
     'User-Agent': ''
@@ -58,12 +58,15 @@ while current_max_price <= max_price:
             winery = match['vintage']['wine']['winery']['name']
             rating = match['vintage']['wine']['statistics']['ratings_average']
             price = match['price']['amount']
-            print(price)
+            ratings_amount = match['vintage']['statistics']['wine_ratings_count']
+            name = match['vintage']['name']
+            print(name)
+
             grapes = []
             for grape in match['vintage']['wine']['style']['grapes']:
                 grapes.append(grape['name'])
 
-            writer.writerow(['[' + ','.join(grapes) + ']', region, country, winery, rating, price])
+            writer.writerow(['[' + ','.join(grapes) + ']', region, country, winery, rating, price, ratings_amount, name])
 
     current_max_price += 15
     current_min_price = current_max_price - 14
@@ -82,38 +85,32 @@ file.close()
 
 
 
-
-
-
- # current_max_price = max_price + 1
- #
- #    for i in range(1):
- #        params['page'] = i+1
- #        print('Page: ' + str(params['page']))
- #
- #        r = requests.get('https://www.vivino.com/api/explore/explore?', params=params, headers=headers)
- #        matches = r.json()['explore_vintage']['matches']
- #
- #        print(dict(matches[0]['price'])['amount'])
- #
- #        for match in matches:
- #            if str(match['vintage']['wine']['style']) == 'None' \
- #                    or str(match['vintage']['wine']['region']) == 'None'\
- #                    or str(match['vintage']['wine']['winery']) == 'None'\
- #                    or str(match['vintage']['wine']['statistics']) == 'None':
- #                continue
- #
- #            region = match['vintage']['wine']['region']['name']
- #            country = match['vintage']['wine']['region']['country']['name']
- #            winery = match['vintage']['wine']['winery']['name']
- #            rating = match['vintage']['wine']['statistics']['ratings_average']
- #            grapes = []
- #            for grape in match['vintage']['wine']['style']['grapes']:
- #                grapes.append(grape['name'])
- #
- #            writer.writerow(['[' + ','.join(grapes) + ']', region, country, winery, rating])
-
-
-
-
+# for i in range(1):
+#     params['page'] = i + 1
+#     print('Page: ' + str(params['page']))
+#
+#     r = requests.get('https://www.vivino.com/api/explore/explore?', params=params, headers=headers)
+#     matches = r.json()['explore_vintage']['matches']
+#
+#     print(dict(matches[0]['vintage']['statistics'])['wine_ratings_count'])
+#     for match in matches:
+#         print(dict(match['vintage'])['name'])
+#         print(dict(match['vintage']['wine'])['name'])
+#
+#     for match in matches:
+#         if str(match['vintage']['wine']['style']) == 'None' \
+#                 or str(match['vintage']['wine']['region']) == 'None' \
+#                 or str(match['vintage']['wine']['winery']) == 'None' \
+#                 or str(match['vintage']['wine']['statistics']) == 'None':
+#             continue
+#
+#         region = match['vintage']['wine']['region']['name']
+#         country = match['vintage']['wine']['region']['country']['name']
+#         winery = match['vintage']['wine']['winery']['name']
+#         rating = match['vintage']['wine']['statistics']['ratings_average']
+#         price = match['price']['amount']
+#
+#         grapes = []
+#         for grape in match['vintage']['wine']['style']['grapes']:
+#             grapes.append(grape['name'])
 
