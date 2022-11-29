@@ -4,7 +4,7 @@ pd.set_option('display.width', 1000)
 
 
 def get_best_in_range(min_price, max_price):
-    wine_data = pd.read_csv('data/wine_data_plus', encoding="utf-8")
+    wine_data = pd.read_csv('data/wine_data_plus.csv', encoding="utf-8")
 
     range_data = wine_data.drop(wine_data[(wine_data['price'] < min_price) | (wine_data['price'] > max_price)].index)
 

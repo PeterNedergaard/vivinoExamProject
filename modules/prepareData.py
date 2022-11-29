@@ -18,7 +18,7 @@ def prepare_data():
     data = pd.concat([data.drop('grapes', axis='columns'), data['grapes'].str.get_dummies(sep=',')], axis='columns')
     data = pd.get_dummies(data, columns=['country', 'region', 'winery'])
 
-    data.to_csv('../wine_data_prepared_new.csv', encoding='utf-8', index=False)
+    data.to_csv('../data/wine_data_prepared_new.csv', encoding='utf-8', index=False)
 
     # data_test = data
     #
