@@ -5,17 +5,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 from modules.best_country_in_range import get_best_in_range
 from modules.predict_wine_data import predict_data
+from modules.predict_flavor_data import predict_flavor_data
+
 
 def show_gui():
     tab1_layout = [
         [sg.T('Denne graf viser forholdet mellem Vines specifikationer og deres bedømmelse')],
-        [sg.T('data 1', key='file 1'), sg.Image("images/graf.png", size=(900, 150))],
-        [sg.Text('data 2', key='file 2'), sg.Image("images/graf.png", size=(900, 150))],
-        [sg.Text('data 3', key='file 3'), sg.Image("images/meme.png", size=(900, 300))],
-        [sg.Multiline(
-            "Som graferne overfor viser, så er der en sammenhæng mellem vinens specifikationer og dens bedømmelse. Den "
-            "bedste indikator for dette er specifikation x",
-            size=(900, 100))]
+        [sg.Combo(
+            ['Land', 'Region', 'Vingård', 'Druer']
+            , default_value="Land", key="spec_rating", readonly=True, enable_events=True)],
+        [sg.Image(key="spec_rating_plot")]
+        # [sg.T('data 1', key='file 1'), sg.Image("images/graf.png", size=(900, 150))],
+        # [sg.Text('data 2', key='file 2'), sg.Image("images/graf.png", size=(900, 150))],
+        # [sg.Text('data 3', key='file 3'), sg.Image("images/meme.png", size=(900, 300))],
+        # [sg.Multiline(
+        #     "Som graferne overfor viser, så er der en sammenhæng mellem vinens specifikationer og dens bedømmelse. Den "
+        #     "bedste indikator for dette er specifikation x",
+        #     size=(900, 100))]
     ]
 
     tab2_layout = [[sg.T('Tab 2')],
@@ -30,10 +36,18 @@ def show_gui():
     regions = list(pd.read_csv("data/regions.csv")["regions"].to_numpy())
     grape_type = list(pd.read_csv("data/grapes.csv")["grapes"].to_numpy())
     winery = list(pd.read_csv("data/wineries.csv")["wineries"].to_numpy())
+    flavors = list(pd.read_csv("data/flavors.csv")["flavors"].to_numpy())
+
+    countries.sort()
+    regions.sort()
+    grape_type.sort()
+    winery.sort()
+    flavors.sort()
 
     country_region_winery = list(pd.read_csv("data/country_region_winery.csv")['country_region_winery'].to_numpy())
 
     chosen_grapes = []
+    chosen_flavors = []
     chosen_regions = []
     chosen_wineries = []
 
@@ -48,8 +62,8 @@ def show_gui():
                        winery
                        , default_value="Vingård", key="Vingård", readonly=True)],
 
-                   [sg.Text("Vælg op til 5 druer fra nedenstående list")],
-                   [sg.Text("indtast evt druens forbogstav for at filtrere resultaterne")],
+                   [sg.Text("Vælg op til 5 druer fra nedenstående liste")],
+                   [sg.Text("indtast evt druens forbogstav, for at filtrere resultaterne")],
                    [sg.InputText(key="filter_grapes", size=(5, 5), enable_events=True)],
                    [sg.Listbox(
                        grape_type, key="Druesort", select_mode="extended", size=(15, 8)),
@@ -78,6 +92,18 @@ def show_gui():
     tab6_layout = [[sg.T('Tab 6')],
                    [sg.Image("images/meme.png", key="file 6")],
                    ]
+    tab7_layout = [[sg.T('Tab 7')],
+                   [sg.Text("Vælg smagsnoter fra nedenstående liste")],
+                   [sg.Text("Indtast evt. smagsnotens forbogstav, for at filtrere resultaterne")],
+                   [sg.InputText(key="filter_flavors", size=(5, 5), enable_events=True)],
+                   [sg.Listbox(
+                       flavors, key="Flavors", select_mode="extended", size=(15, 8)),
+                       sg.Button("Tilføj smagsnote", key="add_flavor"),
+                       sg.Button("Fjern valgte smagsnoter", key="clear_flavor_list"),
+                       sg.Multiline(chosen_flavors, key="chosen_flavors", justification="right", size=(35, 8))],
+                   [sg.Button("Find vin", key="Predict_wine", enable_events=True)],
+                   [sg.Text(size=(30, 1), font='Lucida', justification='left', key="tab7text")]
+                   ]
     layout = [
         [sg.TabGroup([[sg.Tab('Om spec. og bedømmelse', tab1_layout),
                        sg.Tab('Top 10 lande', tab2_layout),
@@ -85,11 +111,12 @@ def show_gui():
                        sg.Tab('Bedste land for prisen', tab4_layout),
                        sg.Tab('Top 5 populære vine', tab5_layout),
                        sg.Tab('Memes-tab', tab6_layout),
+                       sg.Tab('Vin fra smagsnoter', tab7_layout),
 
                        ]])],
     ]
 
-    window = sg.Window("window", layout, size=(800, 800), finalize=True)
+    window = sg.Window("window", layout, size=(900, 800), finalize=True)
     window['filter_grapes'].bind("<Return>", "_Enter")
 
     def modified_array(array, string):
@@ -139,6 +166,12 @@ def show_gui():
             else:
                 window["Druesort"].update(grape_type)
 
+        if event == "filter_flavors":
+            if window["filter_flavors"].get() != "":
+                window["Flavors"].update(modified_array(flavors, window["filter_flavors"].get()))
+            else:
+                window["Flavors"].update(grape_type)
+
         if event == "Best_country":
             max_price = window["Max"].get()
             min_price = window["Min"].get()
@@ -151,7 +184,23 @@ def show_gui():
             window["Tab4_result"].update(result)
 
         if event == "Popular_land":
-            window["popular_top5_plot"].update("images/popular_top5_plots/top5_" + window['Popular_land'].get() + ".png")
+            window["popular_top5_plot"].update(
+                "images/popular_top5_plots/top5_" + window['Popular_land'].get() + ".png")
+
+        if event == "spec_rating":
+            plot_name = ""
+
+            if window["spec_rating"].get() == 'Land':
+                plot_name = "country"
+            elif window["spec_rating"].get() == 'Region':
+                plot_name = "region"
+            elif window["spec_rating"].get() == 'Vingård':
+                plot_name = "winery"
+            else:
+                plot_name = "grapes"
+
+            window["spec_rating_plot"].update(
+                "images/correlation_plot_" + plot_name + ".png")
 
         if event == "clear_list":
             chosen_grapes.clear()
@@ -161,10 +210,17 @@ def show_gui():
                 chosen_grapes.append(window["Druesort"].get())
                 window["chosen_grapes"].update(chosen_grapes)
 
+        if event == "clear_flavor_list":
+            chosen_flavors.clear()
+            window["chosen_flavors"].update(chosen_flavors)
+        if event == "add_flavor":
+            if window["Flavors"].get() not in chosen_flavors:
+                chosen_flavors.append(window["Flavors"].get())
+                window["chosen_flavors"].update(chosen_flavors)
+
         if event == "Predict":
-            if window["Vingård"].get() in winery and window["Land"].get() in countries and window[
-                "Region"].get() in regions and len(chosen_grapes) >= 1:
-                # print("vælg ting og sager")
+            if window["Vingård"].get() in winery and window["Land"].get() in countries\
+                    and window["Region"].get() in regions and len(chosen_grapes) >= 1:
                 print("Valgte druer:", chosen_grapes)
                 print("Vingård:", window["Vingård"].get())
                 print("Land:", window["Land"].get())
@@ -172,8 +228,15 @@ def show_gui():
                 window["tab3text"].update("Vurderet bedømmelse: " + str(
                     predict_data(grapes=chosen_grapes, winery=window["Vingård"].get(), country=window["Land"].get(),
                                  region=window["Region"].get())))
-                # window["tab3text"].update("result")
             else:
                 window["tab3text"].update("Vælg værdier på alle felter")
+
+        if event == "Predict_wine":
+            if len(chosen_flavors) >= 1:
+                window["tab7text"].update("Leder efter en vin, der passer til dig...")
+                prediction = str(predict_flavor_data(chosen_flavors))
+                window["tab7text"].update(prediction)
+            else:
+                window["tab7text"].update("Vælg mindst én smagsnote")
 
     window.close()

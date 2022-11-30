@@ -7,11 +7,12 @@ pd.set_option('display.width', 1000)
 
 
 def predict_flavor_data(flavors):
-    le = preprocessing.LabelEncoder()
-    le.classes_ = np.load('../data/flavor_classes.npy', allow_pickle=True)
+    print('Predicting flavor...')
 
-    empty_predict = pd.read_csv('../data/empty_flavor_predict.csv')
-    # print(empty_predict)
+    le = preprocessing.LabelEncoder()
+    le.classes_ = np.load('data/flavor_classes.npy', allow_pickle=True)
+
+    empty_predict = pd.read_csv('data/empty_flavor_predict.csv')
 
     spec_array = []
 
@@ -21,13 +22,11 @@ def predict_flavor_data(flavors):
     for s in spec_array:
         empty_predict[s] = 1
 
-    model = pickle.load(open('../data/wine_flavor_model.sav', 'rb'))
-
-    print(empty_predict)
+    model = pickle.load(open('data/wine_flavor_model.sav', 'rb'))
 
     prediction = model.predict(empty_predict)
 
     return le.inverse_transform(prediction)[0]
 
 
-print(predict_flavor_data(['oak', 'vanilla', 'chocolate', 'cherry', 'strawberry', 'raspberry', 'plum', 'blackberry', 'earthy', 'smoke', 'leather']))
+# print(predict_flavor_data(['chocolate', 'cocoa']))
