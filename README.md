@@ -13,9 +13,9 @@ The idea was to use the wine data in combination with data preparation, transfor
   - PySimpleGUI
   - RegEx (minor)
 ### Installation guide (if any libraries need to be installed):
-To install the required libraries, this line should be run in the terminal:
+#### To install the required libraries, this line should be run in the terminal:
   - pip install -r requirements/requirements.txt
-These files should be run, since the data they generate are too large for github:
+#### These files should be run, since the data they generate are too large for github:
   - prepareData.py
   - flavorML.py
 ### User guide (how to run the program):
