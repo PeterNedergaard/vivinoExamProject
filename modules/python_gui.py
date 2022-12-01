@@ -105,7 +105,7 @@ def show_gui():
                    [sg.Text(size=(30, 1), font='Lucida', justification='left', key="tab7text")]
                    ]
     layout = [
-        [sg.TabGroup([[sg.Tab('Om spec. og bedømmelse', tab1_layout),
+        [sg.TabGroup([[sg.Tab('Spec. og bedømmelse', tab1_layout),
                        sg.Tab('Top 10 lande', tab2_layout),
                        sg.Tab('Forudsig bedømmelse', tab3_layout),
                        sg.Tab('Bedste land for prisen', tab4_layout),
@@ -170,7 +170,7 @@ def show_gui():
             if window["filter_flavors"].get() != "":
                 window["Flavors"].update(modified_array(flavors, window["filter_flavors"].get()))
             else:
-                window["Flavors"].update(grape_type)
+                window["Flavors"].update(flavors)
 
         if event == "Best_country":
             max_price = window["Max"].get()

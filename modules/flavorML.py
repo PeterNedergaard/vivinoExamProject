@@ -21,7 +21,7 @@ y = data['name']
 
 model, X_train, X_test, y_train, y_test = get_model(X, y)
 
-predictions = model.predict(X_test)
-score = accuracy_score(y_test, predictions)
+# predictions = model.predict(X_test)
+# score = accuracy_score(y_test, predictions)
 
-# pickle.dump(model, open('../data/wine_flavor_model.sav', 'wb'))
+pickle.dump(model, open('../data/wine_flavor_model.sav', 'wb'))

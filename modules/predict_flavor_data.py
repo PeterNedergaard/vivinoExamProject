@@ -29,4 +29,4 @@ def predict_flavor_data(flavors):
     return le.inverse_transform(prediction)[0]
 
 
-# print(predict_flavor_data(['chocolate', 'cocoa']))
+# print(predict_flavor_data(['chocolate', 'cocoa', 'dark chocolate', 'coffee']))
