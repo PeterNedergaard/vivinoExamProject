@@ -16,6 +16,7 @@ The idea was to use the wine data in combination with data preparation, transfor
 #### To install the required libraries, this line should be run in the terminal:
   - pip install -r requirements.txt
 #### These files should be run, since the data they generate are too large for github:
+  (In this order)
   - prepareData.py
   - flavorML.py
 ### User guide (how to run the program):
